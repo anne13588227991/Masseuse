@@ -1,6 +1,6 @@
 <?php
 /**
- * Template for displaying job archive pages
+ * Template Name: 职位列表页
  */
 
 get_header();
@@ -8,7 +8,7 @@ get_header();
 
 <div class="archive-header">
     <div class="container">
-        <h1><?php _e('职位列表', 'masseuse-jobs'); ?></h1>
+        <h1><?php _e('全部职位', 'masseuse-jobs'); ?></h1>
     </div>
 </div>
 
@@ -33,45 +33,32 @@ get_header();
                 ?>
             </select>
             
-            <select name="job_type">
-                <option value=""><?php _e('所有类型', 'masseuse-jobs'); ?></option>
-                <?php
-                $types = get_terms(array(
-                    'taxonomy' => 'job_type',
-                    'hide_empty' => true,
-                ));
-                if ($types && !is_wp_error($types)) {
-                    foreach ($types as $type) {
-                        $selected = (isset($_GET['job_type']) && $_GET['job_type'] == $type->slug) ? 'selected' : '';
-                        echo '<option value="' . esc_attr($type->slug) . '" ' . $selected . '>' . esc_html($type->name) . '</option>';
-                    }
-                }
-                ?>
-            </select>
-            
             <button type="submit"><?php _e('筛选', 'masseuse-jobs'); ?></button>
         </form>
     </div>
 
-    <?php if (have_posts()) : ?>
+    <?php
+    $args = array(
+        'post_type' => 'job',
+        'posts_per_page' => 12,
+        'post_status' => 'publish',
+    );
+    
+    $jobs = new WP_Query($args);
+    
+    if ($jobs->have_posts()) : ?>
         <div class="jobs-grid">
-            <?php while (have_posts()) : the_post(); ?>
+            <?php while ($jobs->have_posts()) : $jobs->the_post(); ?>
                 <?php get_template_part('template-parts/content', 'job'); ?>
             <?php endwhile; ?>
         </div>
         
-        <div class="pagination">
-            <?php
-            the_posts_pagination(array(
-                'mid_size' => 2,
-                'prev_text' => __('上一页', 'masseuse-jobs'),
-                'next_text' => __('下一页', 'masseuse-jobs'),
-            ));
-            ?>
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="<?php echo esc_url(get_post_type_archive_link('job')); ?>" class="btn-primary"><?php _e('查看更多职位', 'masseuse-jobs'); ?></a>
         </div>
     <?php else : ?>
         <p><?php _e('暂无职位信息', 'masseuse-jobs'); ?></p>
-    <?php endif; ?>
+    <?php endif; wp_reset_postdata(); ?>
 </div>
 
 <?php

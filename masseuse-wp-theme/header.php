@@ -9,11 +9,17 @@
 <?php wp_body_open(); ?>
 
 <header class="site-header">
-    <div class="header-container">
-        <a href="<?php echo esc_url(home_url('/')); ?>" class="site-logo">
-            <?php bloginfo('name'); ?>
-        </a>
-        
+    <div class="header-inner">
+        <div class="site-branding">
+            <?php if (has_custom_logo()) : ?>
+                <?php the_custom_logo(); ?>
+            <?php else : ?>
+                <h1 class="site-title">
+                    <a href="<?php echo esc_url(home_url('/')); ?>"><?php bloginfo('name'); ?></a>
+                </h1>
+            <?php endif; ?>
+        </div>
+
         <nav class="main-navigation">
             <?php
             wp_nav_menu(array(
@@ -29,13 +35,11 @@
 
 <?php
 function masseuse_jobs_fallback_menu() {
-    ?>
-    <ul>
-        <li><a href="<?php echo esc_url(home_url('/')); ?>"><?php _e('Home', 'masseuse-jobs'); ?></a></li>
-        <li><a href="<?php echo esc_url(home_url('/jobs')); ?>"><?php _e('Jobs', 'masseuse-jobs'); ?></a></li>
-        <li><a href="<?php echo esc_url(home_url('/register')); ?>"><?php _e('Register', 'masseuse-jobs'); ?></a></li>
-        <li><a href="<?php echo esc_url(home_url('/employer-dashboard')); ?>" class="nav-btn"><?php _e('For Employers', 'masseuse-jobs'); ?></a></li>
-    </ul>
-    <?php
+    echo '<ul>';
+    echo '<li><a href="' . esc_url(home_url('/')) . '">首页</a></li>';
+    echo '<li><a href="' . esc_url(get_post_type_archive_link('job')) . '">职位列表</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/register')) . '">技师注册</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/employer-dashboard')) . '">雇主后台</a></li>';
+    echo '</ul>';
 }
 ?>
